@@ -1,0 +1,704 @@
+/* =========================
+   STATS (DIFFERENT FROM ANALYTICS)
+========================= */
+.dashboard-container{
+ padding: 1.5rem 4rem ;
+}
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:22px;
+margin-bottom:30px;
+}
+
+.stat-card{
+position:relative;
+padding:20px;
+border-radius:18px;
+
+background:linear-gradient(145deg,#ffffff,#f3f4f6);
+
+border:1px solid rgba(0,0,0,0.04);
+
+box-shadow:
+0 10px 25px rgba(0,0,0,0.05),
+inset 0 1px 0 rgba(255,255,255,0.6);
+
+transition:0.3s cubic-bezier(.4,2,.3,1);
+overflow:hidden;
+}
+
+.stat-card::before{
+content:"";
+position:absolute;
+inset:-40%;
+background:radial-gradient(circle, rgba(99,102,241,0.12), transparent 70%);
+filter:blur(60px);
+opacity:0.4;
+}
+
+.stat-card:hover{
+transform:translateY(-6px) scale(1.02);
+box-shadow:
+0 20px 45px rgba(0,0,0,0.08),
+0 0 25px rgba(99,102,241,0.15);
+}
+
+.stat-header{
+font-size:14px;
+color:#6b7280;
+margin-bottom:8px;
+}
+
+.stat-card h2{
+font-size:30px;
+font-weight:700;
+color:#111827;
+}
+
+.green{color:#22c55e;}
+.purple{color:#8b5cf6;}
+
+
+
+/* Issue page */
+
+
+/* =========================
+   STATS GRID
+========================= */
+
+.stats-gridd{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px;
+margin-bottom:30px;
+}
+
+
+/* =========================
+   BASE CARD (GLASS)
+========================= */
+
+.stat-cardd{
+position:relative;
+overflow:hidden;
+
+border-radius:24px;
+padding:22px;
+
+/* glass base */
+background:rgba(255,255,255,0.6);
+backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,0.7);
+
+box-shadow:
+0 12px 35px rgba(0,0,0,0.08),
+inset 0 1px 0 rgba(255,255,255,0.7);
+
+transition:all 0.4s cubic-bezier(.4,2,.3,1);
+}
+
+
+/* =========================
+   PERFECT GRADIENTS (BALANCED)
+========================= */
+
+/* Indigo + Violet */
+.stat-cardd:nth-child(1){
+background:
+linear-gradient(135deg,#6366f1cc,#8b5cf6cc),
+rgba(255,255,255,0.55);
+}
+
+/* Amber + Orange */
+.stat-cardd:nth-child(2){
+background:
+linear-gradient(135deg,#f59e0bcc,#f97316cc),
+rgba(255,255,255,0.55);
+}
+
+/* Sky + Indigo */
+.stat-cardd:nth-child(3){
+background:
+linear-gradient(135deg,#0ea5e9cc,#6366f1cc),
+rgba(255,255,255,0.55);
+}
+
+/* Green + Emerald */
+.stat-cardd:nth-child(4){
+background:
+linear-gradient(135deg,#22c55ecc,#10b981cc),
+rgba(255,255,255,0.55);
+}
+
+
+/* =========================
+   GRADIENT ANIMATION (SUBTLE)
+========================= */
+
+.stat-cardd{
+background-size:200% 200%;
+animation:gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+
+/* =========================
+   SOFT LIGHT GLOW
+========================= */
+
+.stat-cardd::before{
+content:"";
+position:absolute;
+inset:-50%;
+
+background:radial-gradient(circle, rgba(255,255,255,0.35), transparent 70%);
+filter:blur(80px);
+
+opacity:0.5;
+pointer-events:none;
+}
+
+
+/* =========================
+   FLOATING COLOR GLOW
+========================= */
+
+.stat-cardd::after{
+content:"";
+position:absolute;
+bottom:-40%;
+right:-20%;
+
+width:180px;
+height:180px;
+
+background:radial-gradient(circle, rgba(255,255,255,0.25), transparent 70%);
+filter:blur(50px);
+
+opacity:0.6;
+}
+
+
+/* =========================
+   HOVER EFFECT (ELITE)
+========================= */
+
+.stat-cardd:hover{
+transform:translateY(-10px) scale(1.04);
+
+box-shadow:
+0 30px 70px rgba(0,0,0,0.15),
+0 0 40px rgba(99,102,241,0.2);
+}
+
+
+/* =========================
+   CONTENT LAYER
+========================= */
+
+.stat-cardd *{
+position:relative;
+z-index:2;
+}
+
+
+/* =========================
+   TEXT (HIGH READABILITY)
+========================= */
+
+.stat-headerr{
+font-size:13px;
+font-weight:600;
+
+/* slightly dark for contrast */
+color:rgba(17,24,39,0.85);
+
+letter-spacing:0.4px;
+}
+
+
+/* BIG NUMBER */
+
+.stat-cardd h2{
+font-size:34px;
+font-weight:900;
+
+margin-top:8px;
+
+/* crisp readable */
+color:#111827;
+
+letter-spacing:0.5px;
+
+/* subtle glow */
+text-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+
+/* =========================
+   ICON (FLOATING)
+========================= */
+
+.stat-icon{
+position:absolute;
+top:18px;
+right:18px;
+
+width:44px;
+height:44px;
+
+border-radius:14px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:18px;
+
+background:rgba(255,255,255,0.7);
+backdrop-filter:blur(10px);
+
+box-shadow:
+0 8px 20px rgba(0,0,0,0.08);
+
+transition:0.3s;
+}
+
+.stat-cardd:hover .stat-icon{
+transform:scale(1.1) rotate(5deg);
+}
+/* =========================
+   FILTER BAR
+========================= */
+
+.filter-wrapper{
+display:flex;
+gap:12px;
+align-items:center;
+
+padding:16px;
+
+border-radius:20px;
+
+background:rgba(255,255,255,0.75);
+backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,0.7);
+
+box-shadow:0 15px 35px rgba(0,0,0,0.08);
+
+margin-bottom:25px;
+}
+
+.search-box{
+flex:1;
+display:flex;
+align-items:center;
+
+background:white;
+
+border-radius:14px;
+padding:12px 14px;
+
+border:1px solid rgba(0,0,0,0.08);
+}
+
+.search-box input{
+border:none;
+background:transparent;
+outline:none;
+width:100%;
+}
+
+.search-icon{
+margin-right:8px;
+color:#6366f1;
+}
+
+.filter-wrapper select{
+padding:10px 14px;
+border-radius:12px;
+border:1px solid rgba(0,0,0,0.1);
+background:white;
+}
+
+.new-issue-btn{
+background:linear-gradient(135deg,#6366f1,#8b5cf6);
+color:white;
+border:none;
+padding:11px 20px;
+border-radius:14px;
+font-weight:600;
+cursor:pointer;
+}
+
+
+/* =========================
+   TABS
+========================= */
+
+.tabs{
+display:flex;
+gap:12px;
+margin-bottom:24px;
+}
+.tab{
+text-decoration:none;
+
+padding:10px 18px;
+border-radius:999px;
+
+background:rgba(255,255,255,0.6);
+backdrop-filter:blur(10px);
+
+border:1px solid rgba(0,0,0,0.05);
+
+font-size:13px;
+font-weight:500;
+
+transition:all 0.25s;
+}
+
+.tab:hover{
+transform:translateY(-2px);
+background:#eef2ff;
+}
+
+.tab.active{
+background:linear-gradient(135deg,#6366f1,#8b5cf6);
+color:white;
+
+box-shadow:
+0 10px 25px rgba(99,102,241,0.35);
+}
+
+
+/* =========================
+   FAANG LEVEL ISSUE CARD
+========================= */
+
+.issue-card{
+position:relative;
+
+border-radius:22px;
+padding:22px 22px 22px 26px;
+
+/* glass + depth */
+background:linear-gradient(
+145deg,
+rgba(255,255,255,0.9),
+rgba(255,255,255,0.6)
+);
+
+backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,0.6);
+
+/* layered shadow */
+box-shadow:
+0 6px 20px rgba(0,0,0,0.05),
+0 2px 6px rgba(0,0,0,0.04);
+margin-bottom: 20px;
+
+transition:all 0.35s cubic-bezier(.4,2,.3,1);
+overflow:hidden;
+}
+
+
+/* =========================
+   PRIORITY BAR (LEFT)
+========================= */
+
+.priority-bar{
+position:absolute;
+left:0;
+top:0;
+bottom:0;
+width:6px;
+border-radius:0 8px 8px 0;
+z-index:5;
+}
+
+/* brighter + premium */
+
+.priority-bar.low{
+background:linear-gradient(#22c55e,#16a34a);
+}
+
+.priority-bar.medium{
+background:linear-gradient(#e7d765,#d7eb43);
+}
+
+.priority-bar.high{
+background:linear-gradient(#ef4444,#dc2626);
+}
+
+.priority-bar.critical{
+background:linear-gradient(#b91c1c,#7f1d1d);
+}
+
+
+/* =========================
+   CURSOR GLOW EFFECT
+========================= */
+
+.issue-card::before{
+content:"";
+position:absolute;
+
+top:var(--y);
+left:var(--x);
+
+width:200px;
+height:200px;
+
+
+transform:translate(-50%, -50%);
+
+opacity:0;
+transition:opacity 0.3s;
+pointer-events:none;
+}
+
+.issue-card:hover::before{
+opacity:1;
+}
+
+
+/* =========================
+   HOVER (FAANG MOTION)
+========================= */
+
+.issue-card:hover{
+transform:translateY(-8px) scale(1.02);
+
+box-shadow:
+0 25px 60px rgba(0,0,0,0.12),
+0 0 30px rgba(99,102,241,0.18);
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.issue-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:12px;
+}
+
+
+/* =========================
+   TITLE (STRONG)
+========================= */
+
+.issue-title{
+font-size:18px;
+font-weight:700;
+color:#111827;
+
+margin-bottom:6px;
+letter-spacing:0.2px;
+}
+
+
+/* =========================
+   DESCRIPTION
+========================= */
+
+.issue-desc{
+font-size:14px;
+color:#6b7280;
+
+line-height:1.6;
+margin-bottom:14px;
+}
+
+
+/* =========================
+   META TOKENS (FAANG STYLE)
+========================= */
+
+.issue-meta-row{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+
+padding:10px;
+margin:12px 0;
+
+background:rgba(255,255,255,0.6);
+border-radius:12px;
+
+border:1px solid rgba(0,0,0,0.05);
+}
+
+
+/* token chip */
+
+.meta-item{
+display:flex;
+align-items:center;
+gap:6px;
+
+font-size:12.5px;
+font-weight:500;
+
+color:#374151;
+
+padding:6px 10px;
+border-radius:999px;
+
+background:rgba(255,255,255,0.8);
+border:1px solid rgba(0,0,0,0.04);
+
+transition:all 0.2s;
+}
+
+.meta-item:hover{
+background:#eef2ff;
+transform:translateY(-1px);
+}
+
+
+/* =========================
+   BADGES (GLOW)
+========================= */
+
+.severity,
+.status{
+padding:5px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:600;
+margin: 5px;
+border:1px solid rgba(0,0,0,0.05);
+}
+
+/* FAANG soft glow colors */
+
+.open{
+background:#dbeafe;color:#1d4ed8;
+
+}
+
+.inprogress{
+background:#ede9fe;color:#6d28d9;
+}
+
+.resolved{
+background:#dcfce7;color:#15803d;
+
+}
+
+.low{
+background:linear-gradient(#22c55e,#16a34a);
+}
+
+.medium{
+background:linear-gradient(#e7d765,#d7eb43);
+
+}
+
+.high{
+background:linear-gradient(#f59e0b,#f97316);
+
+}
+.critical{
+background:linear-gradient(#db4b4b,#c55757);
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.issue-footer{
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+margin-top:10px;
+padding-top:10px;
+
+border-top:1px solid rgba(0,0,0,0.05);
+}
+
+
+/* =========================
+   CTA BUTTON (PRIMARY)
+========================= */
+.view-btn{
+display:flex;
+align-items:center;
+gap:6px;
+
+font-size:13px;
+font-weight:600;
+text-decoration: none;
+padding:8px 16px;
+border-radius:10px;
+
+background:linear-gradient(135deg,#6366f1,#8b5cf6);
+color:white;
+
+
+
+transition:all 0.25s;
+}
+
+.view-btn:hover{
+background:#6366f1;
+color:white;
+}
+
+
+
+
+
+/* =========================
+   STATUS SELECT
+========================= */
+
+.status-select{
+padding:6px 15px;
+
+border-radius:12px;
+border:1px solid rgba(0,0,0,0.08);
+
+background:white;
+font-size:15px;
+
+transition:0.2s;
+}
+
+.status-select:hover{
+border-color:#6366f1;
+}
+
+
+/* =========================
+   DELETE ICON
+========================= */
+
+.delete-icon{
+opacity:0.5;
+transition:0.2s;
+}
+
+.delete-icon:hover{
+opacity:1;
+transform:scale(1.2);
+color:#ef4444;
+}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="notif-container">
+
+<h1 class="notif-title">Notifications</h1>
+
+<p class="notif-sub">
+Stay updated on new and unresolved vendor issues
+</p>
+
+
+<!-- STATS -->
+
+<div class="notif-stats">
+
+<div class="notif-stat">
+<span>New Issues (Last 7 Days)</span>
+<h2 class="blue">{{new_issues}}</h2>
+</div>
+
+<div class="notif-stat">
+<span>Unresolved Issues</span>
+<h2 class="orange">{{unresolved}}</h2>
+</div>
+
+<div class="notif-stat">
+<span>Critical Issues</span>
+<h2 class="red">{{critical}}</h2>
+</div>
+
+</div>
+
+
+<h3 class="notif-section">Recent Activity</h3>
+
+
+{% for n in notifications %}
+
+<div class="notif-card">
+
+<!-- BODY -->
+
+<div class="notif-body">
+
+<div class="notif-head">
+
+<h4>
+
+{% if n.issue %}
+{{n.issue.title}}
+
+{% elif n.type == "issue_deleted" %}
+Deleted Issue
+
+{% else %}
+Notification
+
+{% endif %}
+
+</h4>
+
+<span class="notif-time">
+{{n.created_at|timesince}} ago
+</span>
+
+</div>
+
+
+<p class="notif-message">
+{{n.message}}
+</p>
+
+
+<div class="notif-meta">
+
+{% if n.issue %}
+
+<span>Vendor: {{n.issue.assigned_to}}</span>
+<span>Severity: {{n.issue.severity}}</span>
+
+{% else %}
+
+<span>Issue removed from system</span>
+
+{% endif %}
+
+</div>
+
+</div>
+
+
+<!-- STATUS -->
+
+<div class="notif-status">
+
+{% if n.issue %}
+
+<span class="status {{n.issue.status|lower|cut:' '}}">
+{{n.issue.status}}
+</span>
+
+{% else %}
+
+<span class="status resolved">
+Deleted
+</span>
+
+{% endif %}
+
+</div>
+
+
+<!-- DELETE BUTTON -->
+
+<a href="{% url 'delete_notification' n.id %}"
+class="notif-delete"
+onclick="return confirm('Delete this notification?')">
+
+🗑
+
+</a>
+
+</div>
+
+{% empty %}
+
+<div class="notif-empty">
+
+🔔 No notifications yet
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/analytics.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="dashboard-container">
+
+<!-- HEADER -->
+<div class="analytics-header">
+<h2 class="page-title">Analytics Dashboard</h2>
+<p class="page-subtitle">
+Overview of issue tracking metrics and trends
+</p>
+</div>
+
+
+<!-- =========================
+     STATS
+========================= -->
+
+<div class="stats-grid">
+
+<div class="stat-card modern total">
+    <div class="stat-content">
+        <span>Total Issues</span>
+        <h2 class="counter" data-target="{{total}}">0</h2>
+        <p>All records</p>
+    </div>
+    <div class="stat-icon">📊</div>
+</div>
+
+<div class="stat-card modern open">
+    <div class="stat-content">
+        <span>Open</span>
+        <h2 class="counter" data-target="{{open}}">0</h2>
+        <p>Pending issues</p>
+    </div>
+    <div class="stat-icon">📂</div>
+</div>
+
+<div class="stat-card modern progress">
+    <div class="stat-content">
+        <span>In Progress</span>
+        <h2 class="counter" data-target="{{progress}}">0</h2>
+        <p>Ongoing work</p>
+    </div>
+    <div class="stat-icon">⏳</div>
+</div>
+
+<div class="stat-card modern resolved">
+    <div class="stat-content">
+        <span>Resolved</span>
+        <h2 class="counter" data-target="{{resolved}}">0</h2>
+        <p>Completed</p>
+    </div>
+    <div class="stat-icon">✔</div>
+</div>
+
+</div>
+
+
+<!-- =========================
+     CHARTS (FIXED)
+========================= -->
+
+<div class="chart-grid">
+
+<!-- PIE -->
+<div class="chart-card">
+<h4>Status Distribution</h4>
+<div class="chart-wrapper">
+<canvas id="statusChart"></canvas>
+</div>
+</div>
+
+<!-- BAR -->
+<div class="chart-card">
+<h4>Severity Distribution</h4>
+<div class="chart-wrapper">
+<canvas id="severityChart"></canvas>
+</div>
+</div>
+
+<!-- VENDOR -->
+<div class="chart-card">
+<h4>Issues by Vendor</h4>
+<div class="chart-wrapper">
+<canvas id="vendorChart"></canvas>
+</div>
+</div>
+
+<!-- TREND -->
+<div class="chart-card">
+<h4>7-Day Activity Trend</h4>
+<div class="chart-wrapper">
+<canvas id="trendChart"></canvas>
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   COUNTER ANIMATION
+========================= */
+
+document.querySelectorAll('.counter').forEach(counter => {
+
+counter.innerText = '0';
+
+const updateCounter = () => {
+const target = +counter.getAttribute('data-target');
+const current = +counter.innerText;
+const increment = target / 40;
+
+if(current < target){
+counter.innerText = Math.ceil(current + increment);
+setTimeout(updateCounter, 20);
+}else{
+counter.innerText = target;
+}
+};
+
+updateCounter();
+
+});
+
+
+/* =========================
+   STATUS PIE
+========================= */
+
+new Chart(document.getElementById("statusChart"), {
+type: "pie",
+data: {
+labels: ["Open", "In Progress", "Resolved"],
+datasets: [{
+data: [{{open}}, {{progress}}, {{resolved}}],
+backgroundColor: [
+"#6366f1", // indigo
+"#f59e0b", // amber
+"#22c55e"  // green
+],
+hoverOffset: 12,
+borderWidth: 0
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+animation: {
+duration: 1400,
+easing: 'easeOutQuart'
+}
+}
+});
+
+
+/* =========================
+   SEVERITY BAR
+========================= */
+
+new Chart(document.getElementById("severityChart"), {
+type: "bar",
+data: {
+labels: ["Low","Medium","High","Critical"],
+datasets: [{
+
+    label: "Severity",   
+    data: [{{low}}, {{medium}}, {{high}},{{critical}}],
+backgroundColor: [
+"#22c55e",
+"#eab308",
+"#ef4444",
+"#7f1d1d"
+],
+borderRadius: 10
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+animation: {
+duration: 1400,
+easing: 'easeOutQuart'
+},
+scales: {
+x: { grid: { display: false }},
+y: { grid: { color: "rgba(0,0,0,0.05)" }}
+}
+}
+});
+
+
+/* =========================
+   VENDOR BAR
+========================= */
+
+new Chart(document.getElementById("vendorChart"), {
+type: "bar",
+data: {
+labels: [{% for k,v in assignee_data.items %}"{{k}}",{% endfor %}],
+datasets: [{
+      label: "Workers", 
+data: [{% for k,v in assignee_data.items %}{{v}},{% endfor %}],
+backgroundColor: "#6366f1",
+borderRadius: 12
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+animation: {
+duration: 1400,
+easing: 'easeOutQuart'
+},
+scales: {
+x: { grid: { display: false }},
+y: { grid: { color: "rgba(0,0,0,0.05)" }}
+}
+}
+});
+
+
+/* =========================
+   TREND LINE
+========================= */
+
+new Chart(document.getElementById("trendChart"), {
+type: "line",
+data: {
+labels: {{trend_dates|safe}},
+datasets: [{
+    label:"Trend",
+data: {{trend_counts|safe}},
+borderColor:"#6366f1",
+backgroundColor:"rgba(99,102,241,0.15)",
+fill: true,
+tension: 0.45,
+pointRadius: 5,
+pointHoverRadius: 7,
+pointBackgroundColor: "#6366f1"
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+animation: {
+duration: 1400,
+easing: 'easeOutQuart'
+},
+scales: {
+x: { grid: { display: false }},
+y: { grid: { color: "rgba(0,0,0,0.05)" }}
+}
+}
+});
+
+</script>
+
+{% endblock %}

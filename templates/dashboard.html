@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/issues.css' %}">
+<div class="dashboard-container">
+
+<!-- STATS -->
+
+<div class="stats-gridd">
+
+<div class="stat-cardd">
+<div class="stat-headerr">
+<span>Total Issues</span>
+</div>
+<h2>{{total}}</h2>
+<div class="stat-icon">📊</div>
+</div>
+
+<div class="stat-cardd">
+<div class="stat-headerr">
+<span>Open</span>
+</div>
+<h2>{{open}}</h2>
+<div class="stat-icon">⚠</div>
+</div>
+
+<div class="stat-cardd">
+<div class="stat-headerr">
+<span> In Progress</span>
+</div>
+<h2 class="purple">{{progress}}</h2>
+<div class="stat-icon">⏳</div>
+</div>
+
+<div class="stat-cardd">
+<div class="stat-headerr">
+<span>✔ Resolved</span>
+</div>
+<h2 class="green">{{resolved}}</h2>
+<div class="stat-icon">✔</div>
+</div>
+
+</div>
+
+
+<!-- FILTER BAR -->
+
+<form method="GET">
+
+<div class="filter-wrapper">
+
+<div class="search-box">
+<span class="search-icon">🔍</span>
+
+<input
+type="text"
+name="search"
+placeholder="Search issues..."
+value="{{request.GET.search}}"
+oninput="this.form.submit()"
+/>
+
+</div>
+
+<select name="severity" onchange="this.form.submit()">
+<option value="">All Severities</option>
+<option value="Low" {% if request.GET.severity == "Low" %}selected{% endif %}>Low</option>
+<option value="Medium" {% if request.GET.severity == "Medium" %}selected{% endif %}>Medium</option>
+<option value="High" {% if request.GET.severity == "High" %}selected{% endif %}>High</option>
+<option value="Critical" {% if request.GET.severity == "Critical" %}selected{% endif %}>Critical</option>
+</select>
+
+<select name="assignee" onchange="this.form.submit()">
+<option value="">All Vendors</option>
+{% for vendor in vendors %}
+<option value="{{vendor.id}}"
+{% if request.GET.assignee == vendor.id|stringformat:"s" %}selected{% endif %}>
+{{vendor.name}}
+</option>
+{% endfor %}
+</select>
+
+<button class="new-issue-btn" type="button" data-bs-toggle="modal" data-bs-target="#issueModal">
++ New Issue
+</button>
+
+</div>
+
+</form>
+
+<!-- TABS -->
+
+<div class="tabs">
+
+<a href="?"
+class="tab {% if not request.GET.status %}active{% endif %}">
+All Issues ({{total}})
+</a>
+
+<a href="?status=Open"
+class="tab {% if request.GET.status == 'Open' %}active{% endif %}">
+Open ({{open}})
+</a>
+
+<a href="?status=In Progress"
+class="tab {% if request.GET.status == 'In Progress' %}active{% endif %}">
+In Progress ({{progress}})
+</a>
+
+<a href="?status=Resolved"
+class="tab {% if request.GET.status == 'Resolved' %}active{% endif %}">
+Resolved ({{resolved}})
+</a>
+
+</div>
+
+
+<!-- STATUS MESSAGE -->
+
+<div id="status-message" style="display:none;" class="alert alert-success mt-2"></div>
+
+
+<!-- ISSUE LIST -->
+<div class="issue-list">
+{% for issue in issues %}
+
+<div class="issue-card">
+<div class="priority-bar {{issue.severity|lower|cut:' '}}"></div>
+<div class="issue-header">
+
+<div class="badge-group">
+<span class="severity {{issue.severity|lower|cut:' '}}">
+{{issue.severity}}
+</span>
+
+<span class="status {{issue.status|lower|cut:' '}}">
+{{issue.status}}
+</span>
+</div>
+
+<a href="{% url 'delete_issue' issue.id %}" 
+   class="delete-icon"
+   onclick="return confirm('Delete this issue?')">
+🗑
+</a>
+
+</div>
+
+
+<!-- TITLE -->
+<h5 class="issue-title">
+{{issue.title}}
+</h5>
+
+<p class="issue-desc">
+{{issue.description}}
+</p>
+
+
+<!-- META ROW -->
+
+
+
+
+<div class="issue-meta-row">
+
+<div class="meta-item">
+<span class="meta-icon">👤</span>
+<span><strong>Created:</strong> {{issue.created_by}}</span>
+</div>
+
+<div class="meta-item">
+<span class="meta-icon">🎯</span>
+<span><strong>Assigned:</strong> {{issue.assigned_to.name}}</span>
+</div>
+
+<div class="meta-item">
+<span class="meta-icon">📅</span>
+<span>{{issue.created_at|date:"M d, Y"}}</span>
+</div>
+
+</div>
+
+
+
+<!-- FOOTER -->
+<div class="issue-footer">
+
+<a href="{% url 'issue_detail' issue.id %}" class="view-btn">
+👁 View
+</a>
+
+<div class="status-update">
+<select class="status-select status-change" data-id="{{issue.id}}">
+<option value="Open" {% if issue.status == "Open" %}selected{% endif %}>Open</option>
+<option value="In Progress" {% if issue.status == "In Progress" %}selected{% endif %}>In Progress</option>
+<option value="Resolved" {% if issue.status == "Resolved" %}selected{% endif %}>Resolved</option>
+</select>
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+</div>
+
+{% include 'modal.html' %}
+
+
+<script>
+
+document.querySelectorAll(".status-change").forEach(function(select){
+
+select.addEventListener("change", function(){
+
+let issueId = this.dataset.id
+let newStatus = this.value
+
+fetch("/update_status/",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/x-www-form-urlencoded",
+"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+},
+
+body:`id=${issueId}&status=${newStatus}`
+
+})
+
+.then(res=>res.json())
+
+.then(data=>{
+
+let msg=document.getElementById("status-message")
+
+if(data.success){
+
+msg.className="alert alert-success mt-2"
+msg.innerText="Status updated successfully!"
+
+}else{
+
+msg.className="alert alert-danger mt-2"
+msg.innerText="Failed to update status"
+
+}
+
+msg.style.display="block"
+
+setTimeout(()=>msg.style.display="none",2000)
+
+})
+
+})
+
+})
+
+
+
+// =========================
+// STAGGER ANIMATION
+// =========================
+
+document.querySelectorAll(".issue-card").forEach((card, i) => {
+card.style.opacity = 0;
+card.style.transform = "translateY(20px)";
+
+setTimeout(()=>{
+card.style.transition = "all 0.5s ease";
+card.style.opacity = 1;
+card.style.transform = "translateY(0)";
+}, i * 80);
+});
+
+
+</script>
+
+{% endblock %}

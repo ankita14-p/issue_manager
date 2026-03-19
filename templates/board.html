@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{%  load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/board.css' %}">
+<div class="board-page">
+
+
+<div class="board-toolbar">
+
+<form method="GET">
+
+<select name="vendor"
+        class="vendor-filter"
+        onchange="this.form.submit()">
+
+<option value="">All Vendors</option>
+
+{% for v in vendors %}
+<option value="{{v.id}}"
+    {% if v.id|stringformat:"s" == selected_vendor %}selected{% endif %}>
+    {{v.name}}
+</option>
+{% endfor %}
+
+</select>
+
+</form>
+
+<button class="new-issue-btn"
+data-bs-toggle="modal"
+data-bs-target="#issueModal">
+
++ New Issue
+
+</button>
+
+</div>
+
+
+<!-- TOP STATS -->
+
+<div class="board-stats">
+
+<div class="board-stat-card open">
+<div class="stat-icon">📂</div>
+<span>Open Issues</span>
+<h2 class="blue">{{open_count}}</h2>
+</div>
+
+<div class="board-stat-card progress">
+<div class="stat-icon">⚙️</div>
+<span>In Progress</span>
+<h2 class="blue">{{progress_count}}</h2>
+</div>
+
+<div class="board-stat-card resolved">
+<div class="stat-icon">✅</div>
+<span>Resolved</span>
+<h2 class="green">{{resolved_count}}</h2>
+</div>
+
+</div>
+
+
+
+<!-- KANBAN BOARD -->
+
+<div class="kanban-wrapper">
+
+
+<!-- OPEN COLUMN -->
+
+<div class="kanban-column open">
+
+<div class="kanban-header">
+Open
+<span class="column-count">{{open_count}}</span>
+</div>
+
+<div class="kanban-list">
+
+{% for issue in open_issues %}
+
+<div class="kanban-task ">
+
+<div class="task-top">
+
+<h4>{{issue.title}}</h4>
+
+<span class="severity {{issue.severity|lower}}">
+{{issue.severity}}
+</span>
+
+</div>
+
+<p class="task-desc">
+{{issue.description|truncatewords:14}}
+</p>
+
+<div class="task-meta">
+<span>🎯 {{issue.assigned_to.name}}</span>
+
+<span>📅 {{issue.created_at|date:"M d, Y"}}</span>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+
+<!-- PROGRESS COLUMN -->
+
+<div class="kanban-column progress">
+
+<div class="kanban-header">
+In Progress
+<span class="column-count">{{progress_count}}</span>
+</div>
+
+<div class="kanban-list">
+
+{% for issue in progress_issues %}
+
+<div class="kanban-task">
+
+<div class="task-top">
+
+<h4>{{issue.title}}</h4>
+
+<span class="severity {{issue.severity|lower}}">
+{{issue.severity}}
+</span>
+
+</div>
+
+<p class="task-desc">
+{{issue.description|truncatewords:14}}
+</p>
+
+<div class="task-meta">
+
+<span>🎯 {{issue.assigned_to.name}}</span>
+
+<span>📅 {{issue.created_at|date:"M d, Y"}}</span>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+
+<!-- RESOLVED COLUMN -->
+
+<div class="kanban-column resolved">
+
+<div class="kanban-header">
+Resolved
+<span class="column-count">{{resolved_count}}</span>
+</div>
+
+<div class="kanban-list">
+
+{% for issue in resolved_issues %}
+
+<div class="kanban-task">
+
+<div class="task-top">
+
+<h4>{{issue.title}}</h4>
+
+<span class="severity {{issue.severity|lower}}">
+{{issue.severity}}
+</span>
+
+</div>
+
+<p class="task-desc">
+{{issue.description|truncatewords:14}}
+</p>
+
+<div class="task-meta">
+<span>🎯 {{issue.assigned_to.name}}</span>
+
+<span>📅 {{issue.created_at|date:"M d, Y"}}</span>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+{% include 'modal.html' %}
+{% endblock %}

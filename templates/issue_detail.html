@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="issue-detail-layout">
+
+<!-- LEFT SIDE -->
+
+<div class="issue-left">
+
+<a href="{% url 'dashboard' %}" class="back-btn">
+← Back to Issues
+</a>
+
+
+<div class="issue-detail-card">
+
+<div class="badge-row">
+
+<span class="severity-badge {{issue.severity|lower}}">
+{{issue.severity}}
+</span>
+
+<span class="status-badge {{issue.status|lower|cut:' '}}">
+{{issue.status}}
+</span>
+
+</div>
+
+
+<h2 class="issue-detail-title">{{issue.title}}</h2>
+
+<p class="issue-detail-desc">
+{{issue.description}}
+</p>
+
+<hr>
+
+
+<div class="issue-meta-grid">
+
+<div class="meta-item">
+
+<div class="avatar">
+{{issue.created_by.username|slice:":1"}}
+</div>
+
+<div>
+<span>Created By</span>
+<strong>{{issue.created_by}}</strong>
+</div>
+
+</div>
+
+
+<div class="meta-item">
+
+<div class="avatar purple">
+{{issue.assigned_to.name|slice:":1"}}
+</div>
+
+<div>
+<span>Assigned To</span>
+<strong>{{issue.assigned_to.name}}</strong>
+</div>
+
+</div>
+
+
+<div class="meta-item">
+
+<div class="icon">🏢</div>
+
+<div>
+<span>Category</span>
+<strong>{{issue.assigned_to.category}}</strong>
+</div>
+
+</div>
+
+
+<div class="meta-item">
+
+<div class="icon">📅</div>
+
+<div>
+<span>Created</span>
+<strong>{{issue.created_at|date:"M d, Y"}}</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<hr>
+
+
+<div class="status-update-block">
+
+<p class="meta-title">Update Status</p>
+
+<select class="status-select status-change" data-id="{{issue.id}}">
+
+<option value="Open" {% if issue.status == "Open" %}selected{% endif %}>
+Open
+</option>
+
+<option value="In Progress" {% if issue.status == "In Progress" %}selected{% endif %}>
+In Progress
+</option>
+
+<option value="Resolved" {% if issue.status == "Resolved" %}selected{% endif %}>
+Resolved
+</option>
+
+</select>
+<div id="status-message" class="status-toast" style="display:none;">
+Status updated successfully!
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ATTACHMENTS -->
+
+<div class="issue-detail-card">
+
+<div class="section-header">
+
+<h4>📎 Attachments</h4>
+
+</div>
+
+{% if issue.attachment %}
+
+<div class="attachment-card">
+
+<div class="file-icon">
+📄
+</div>
+
+<div class="file-info">
+
+<div class="file-name">
+{{issue.attachment.name}}
+</div>
+
+<div class="file-meta">
+Uploaded by {{issue.created_by}}
+</div>
+
+</div>
+
+<a href="{{issue.attachment.url}}" class="download-icon">
+⬇
+</a>
+
+</div>
+
+{% else %}
+
+<p class="text-muted">No attachments available</p>
+
+{% endif %}
+
+</div>
+
+
+<!-- COMMENTS -->
+
+<div class="issue-detail-card">
+
+<h4>💬 Comments</h4>
+
+<div class="comment-list">
+
+{% for comment in comments %}
+
+<div class="comment-item">
+
+<div class="comment-avatar">
+{{comment.user.username|slice:":1"}}
+</div>
+
+<div class="comment-content">
+
+<div class="comment-header">
+
+<strong>{{comment.user}}</strong>
+
+<span class="comment-time">
+{{comment.created_at|timesince}} ago
+</span>
+
+</div>
+
+<p>{{comment.text}}</p>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<form method="POST" class="comment-form">
+
+{% csrf_token %}
+
+<textarea
+name="comment"
+placeholder="Write your comment here..."
+required
+></textarea>
+
+<button class="comment-btn">
+Post Comment
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+
+<!-- RIGHT SIDEBAR -->
+
+<div class="issue-right">
+
+
+<div class="sidebar-card">
+
+<h4>Activity Timeline</h4>
+
+<div class="timeline">
+
+<div class="timeline-item">
+
+<div class="timeline-icon green"></div>
+
+<div>
+
+<strong>Issue created</strong>
+
+<p>{{issue.created_at|date:"M d, Y"}}</p>
+
+</div>
+
+</div>
+
+
+{% if comments.last %}
+
+<div class="timeline-item">
+
+<div class="timeline-icon blue"></div>
+
+<div>
+
+<strong>Latest comment</strong>
+
+<p>{{comments.last.created_at|timesince}} ago</p>
+
+</div>
+
+</div>
+
+{% endif %}
+
+
+<div class="timeline-item">
+
+<div class="timeline-icon purple"></div>
+
+<div>
+
+<strong>Status</strong>
+
+<p>{{issue.status}}</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="sidebar-card">
+
+<h4>Quick Stats</h4>
+
+<div class="quick-stat">
+
+<span>Attachments</span>
+<b>{{issue.attachment|yesno:"1,0"}}</b>
+
+</div>
+
+<div class="quick-stat">
+
+<span>Comments</span>
+<b>{{comments.count}}</b>
+
+</div>
+
+<div class="quick-stat">
+
+<span>Days Open</span>
+<b>{{issue.created_at|timesince}}</b>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+document.querySelectorAll(".status-change").forEach(function(select){
+
+select.addEventListener("change", function(){
+
+let issueId = this.dataset.id
+let newStatus = this.value
+
+fetch("/update_status/",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/x-www-form-urlencoded",
+"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+},
+
+body:`id=${issueId}&status=${newStatus}`
+
+})
+
+.then(response => response.json())
+
+.then(data => {
+
+let messageBox = document.getElementById("status-message")
+
+if(data.success){
+
+messageBox.innerText = "Status updated successfully!"
+messageBox.className = "status-toast success"
+messageBox.style.display = "block"
+
+}else{
+
+messageBox.innerText = "Failed to update status"
+messageBox.className = "status-toast error"
+messageBox.style.display = "block"
+
+}
+
+setTimeout(()=>{
+messageBox.style.display = "none"
+},2500)
+
+})
+
+})
+
+})
+
+</script>
+
+{% endblock %}

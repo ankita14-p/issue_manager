@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/vendors.css' %}">
+<div class="vendors-container">
+
+<div class="vendors-header">
+<div>
+<h1>Vendor Directory</h1>
+<p>Manage and monitor vendor relationships</p>
+</div>
+
+<button type="button"
+class="create-vendor-btn"
+data-bs-toggle="modal"
+data-bs-target="#vendorModal">
++ Add Vendor
+</button>
+</div>
+
+
+<form method="GET">
+
+<div class="vendor-search-wrapper">
+
+<input
+type="text"
+name="search"
+value="{{search}}"
+placeholder="Search vendors..."
+class="vendor-search"
+/>
+
+<button class="search-btn">Search</button>
+
+</div>
+
+</form>
+
+
+<!-- STATS -->
+
+<div class="vendor-stats-grid">
+
+<div class="vendor-stat">
+<p>Total Vendors</p>
+<h2>{{total_vendors}}</h2>
+<div class="stat-icon">👥</div>
+</div>
+
+<div class="vendor-stat">
+<p>Active Vendors</p>
+<h2 class="green">{{active_vendors}}</h2>
+<div class="stat-icon">🎯</div>
+</div>
+
+<div class="vendor-stat">
+<p>Total Open Issues</p>
+<h2 class="red">{{total_open_issues}}</h2>
+<div class="stat-icon">📌</div>
+</div>
+
+<div class="vendor-stat">
+<p>Avg Rating</p>
+<h2 class="yellow">{{avg_rating}}</h2>
+<div class="stat-icon">⭐</div>
+</div>
+
+</div>
+
+
+<!-- VENDOR GRID -->
+
+<div class="vendor-grid">
+
+{% for item in vendor_data %}
+{% with vendor=item.vendor %}
+
+<div class="vendor-card">
+
+<div class="vendor-top">
+
+<div>
+<h3 class="vendor-name">
+{{vendor.name}}
+<span class="vendor-status">{{vendor.status}}</span>
+</h3>
+
+<p class="vendor-category">{{vendor.category}}</p>
+</div>
+
+<div class="vendor-rating">
+⭐ {{vendor.rating}}
+</div>
+
+</div>
+
+<div class="vendor-info">
+<p>📧 {{vendor.email}}</p>
+<p>📞 {{vendor.phone}}</p>
+<p>📅 Joined {{vendor.joined_date}}</p>
+</div>
+
+<hr>
+
+<p><b>Contact:</b> {{vendor.contact_person}}</p>
+
+<hr>
+
+<div class="issue-stats">
+
+<div class="stat-box open">
+<h3>{{item.open}}</h3>
+<p>Open</p>
+</div>
+
+<div class="stat-box progress">
+<h3>{{item.progress}}</h3>
+<p>Progress</p>
+</div>
+
+<div class="stat-box resolved">
+<h3>{{item.resolved}}</h3>
+<p>Resolved</p>
+</div>
+
+</div>
+
+</div>
+
+{% endwith %}
+{% endfor %}
+
+</div>
+
+</div>
+
+<div class="modal fade" id="vendorModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h5 class="modal-title">Create Vendor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- FORM -->
+      <form method="POST" action="{% url 'create_vendor' %}">
+        {% csrf_token %}
+
+        <div class="modal-body">
+
+          <input type="text" name="name" placeholder="Vendor Name" required>
+          <input type="text" name="category" placeholder="Category" required>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="text" name="phone" placeholder="Phone" required>
+          <input type="text" name="contact_person" placeholder="Contact Person" required>
+          <input type="number" step="0.1" name="rating" placeholder="Rating">
+
+          <select name="status">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="modal-footer">
+          <button type="submit" class="create-vendor-btn">Create</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
