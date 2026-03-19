@@ -7,15 +7,15 @@
 
 <div class="vendors-header">
 <div>
-<h1>Vendor Directory</h1>
-<p>Manage and monitor vendor relationships</p>
+<h1>Members Directory</h1>
+<p>Manage and monitor members</p>
 </div>
 
 <button type="button"
 class="create-vendor-btn"
 data-bs-toggle="modal"
 data-bs-target="#vendorModal">
-+ Add Vendor
++ Add Members
 </button>
 </div>
 
@@ -28,7 +28,7 @@ data-bs-target="#vendorModal">
 type="text"
 name="search"
 value="{{search}}"
-placeholder="Search vendors..."
+placeholder="Search members..."
 class="vendor-search"
 />
 
@@ -44,13 +44,13 @@ class="vendor-search"
 <div class="vendor-stats-grid">
 
 <div class="vendor-stat">
-<p>Total Vendors</p>
+<p>Total Members</p>
 <h2>{{total_vendors}}</h2>
 <div class="stat-icon">👥</div>
 </div>
 
 <div class="vendor-stat">
-<p>Active Vendors</p>
+<p>Active Members</p>
 <h2 class="green">{{active_vendors}}</h2>
 <div class="stat-icon">🎯</div>
 </div>

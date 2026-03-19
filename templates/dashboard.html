@@ -71,7 +71,7 @@ oninput="this.form.submit()"
 </select>
 
 <select name="assignee" onchange="this.form.submit()">
-<option value="">All Vendors</option>
+<option value="">All Members</option>
 {% for vendor in vendors %}
 <option value="{{vendor.id}}"
 {% if request.GET.assignee == vendor.id|stringformat:"s" %}selected{% endif %}>
